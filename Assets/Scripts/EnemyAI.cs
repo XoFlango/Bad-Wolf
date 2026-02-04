@@ -40,8 +40,5 @@ public class EnemyAI : MonoBehaviour
         // 2. Move usando física (respeita paredes)
         rb.linearVelocity = direction * speed;
 
-        // Opcional: Girar para olhar pro player
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        rb.rotation = angle;
     }
 }

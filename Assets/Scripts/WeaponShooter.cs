@@ -17,6 +17,9 @@ public class WeaponShooter : MonoBehaviour
 
     void Update()
     {
+        // Se a arma não tem pai (está solta no mundo), ela ignora o clique.
+        if (transform.parent == null) return;
+
         // Se a arma estiver voando (arremessada), não pode atirar
         if (throwable != null && throwable.isFlying) return;
 
