@@ -2,13 +2,13 @@ using UnityEngine;
 
 public class ProjectileBehavior : MonoBehaviour
 {
-    [Header("Configurações do Projétil")]
+    [Header("Configurações")]
     public float speed = 20f;
-    public float lifeTime = 3f; // Tempo para se autodestruir se não bater em nada
-    public int damage = 1;
+    public int damage = 10;
+    public float lifeTime = 5f; // Tempo para destruir se não bater em nada
 
     [Header("Efeitos")]
-    public GameObject hitEffectPrefab; // Opcional: Explosãozinha ao bater
+    public GameObject impactEffect; // Opcional: Partícula ao bater
 
     private Rigidbody2D rb;
 
@@ -16,62 +16,59 @@ public class ProjectileBehavior : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
 
-        // DESTROY POR TEMPO: Garante que a bala suma depois de X segundos
-        Destroy(gameObject, lifeTime);
-
-        // MOVIMENTO: Impulso inicial na direção que o objeto está rotacionado (Eixo X Vermelho)
+        // A bala já nasce voando para a direita (o WeaponController já rotacionou ela)
         rb.linearVelocity = transform.right * speed;
+
+        // Segurança: Destrói depois de X segundos para não lagar o jogo
+        Destroy(gameObject, lifeTime);
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    void OnTriggerEnter2D(Collider2D hitInfo)
     {
-        // Ignora o próprio Player e outros projéteis para não explodir na saída
-        if (other.CompareTag("Player") || other.CompareTag("Projectile")) return;
+        // --- A LISTA BRANCA (WHITELIST) ---
+        // Verificamos se o objeto tem uma das tags permitidas
+        Debug.Log($"[BALA] Nasci e bati em: {hitInfo.name} (Tag: {hitInfo.tag})");
+        bool isEnemy = hitInfo.CompareTag("Enemy");
+        bool isProp = hitInfo.CompareTag("Prop");
+        bool isWall = hitInfo.CompareTag("Wall"); // Paredes/Cenário
 
-        // Lógica de Dano (Exemplo)
-        if (other.CompareTag("Enemy"))
+        // Se NÃO for nenhum desses três, ignora e deixa passar
+        if (!isEnemy && !isProp && !isWall)
         {
-            Debug.Log("Acertou inimigo!");
-            // other.GetComponent<EnemyHealth>()?.TakeDamage(damage);
+            // Debug opcional para saber o que ignorou
+            Debug.Log($"[Bala] Ignorou colisão com: {hitInfo.name}");
+            return;
         }
 
-        // Verifica se é uma parede ou objeto sólido (Camada "Ground" ou "Obstacle")
-        // Ou simplesmente destrói em qualquer coisa que não seja o player
-        HandleImpact();
-        // Calcula o dano
-        // Ignora player e outros projéteis
-        if (other.CompareTag("Player") || other.CompareTag("Projectile")) return;
+        // --- A PARTIR DAQUI, É COLISÃO VÁLIDA ---
 
-        // Tenta pegar o script de vida do objeto que foi atingido
-        EnemyHealth enemy = other.GetComponent<EnemyHealth>();
+        // 1. Tenta causar dano (Só Inimigos e Props têm vida)
+        // --- COLISÃO VÁLIDA ---
 
-        if (enemy != null)
+        // CASO 1: É INIMIGO? (Usa o script de vida do inimigo)
+        if (isEnemy)
         {
-            // AQUI ESTÁ A MÁGICA:
-            // 1. Pega o dano base do projétil
-            // 2. Passa pela calculadora
-            // 3. Aplica o resultado no inimigo
-            int finalDamage = DamageCalculator.CalculateFinalDamage(damage);
+            // Substitua 'EnemyHealth' pelo nome EXATO do script de vida dos seus inimigos
+            EnemyHealth enemyHealth = hitInfo.GetComponent<EnemyHealth>();
 
-            enemy.TakeDamage(finalDamage);
+            if (enemyHealth != null)
+            {
+                // O script do inimigo deve ter o método TakeDamage igual ao Health
+                enemyHealth.TakeDamage(damage);
+            }
+          
         }
-        else
+        // CASO 2: É PROP/OBJETO? (Usa o script de vida genérico)
+        else if (isProp)
         {
-            // Bateu na parede ou objeto indestrutível
-            // Opcional: Tocar som de 'ricochete'
+            Health propHealth = hitInfo.GetComponent<Health>();
+
+            if (propHealth != null)
+            {
+                propHealth.TakeDamage(damage);
+            }
         }
-
-        HandleImpact(); // Destrói a bala
-    }
-
-    void HandleImpact()
-    {
-        // Se tiver efeito visual, cria ele antes de destruir
-        if (hitEffectPrefab != null)
-        {
-            Instantiate(hitEffectPrefab, transform.position, Quaternion.identity);
-        }
-
-        Destroy(gameObject); // Tchau, bala
+        Destroy(gameObject);
     }
 }
+

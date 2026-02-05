@@ -6,30 +6,33 @@ public class PlayerController : MonoBehaviour
 {
     [Header("Referências Visuais")]
     // ARRASTE O OBJETO FILHO "VISUALS" PARA AQUI. 
-    // Se deixar vazio, ele tenta usar o próprio objeto (mas pode bugar a colisão na parede).
     public Transform visualTransform;
     public Transform weaponHolder;
 
     [Header("Arremesso")]
-    public float throwForce = 15f; // Força do arremesso
+    // Nota: A força agora é definida na Arma, mas mantemos aqui caso use para itens genéricos
+    public float throwForce = 15f;
 
     [Header("Movimento")]
     public float moveSpeed = 5f;
     private Rigidbody2D rb;
     private Vector2 movement;
 
-    [Header("Idle (Respiração)")]
-    public float breathSpeed = 2f; // Velocidade da respiração
-    public float breathAmount = 0.05f; // O quanto ele estica (sutil)
+    [Header("Recuo (Knockback)")] // --- NOVO ---
+    private Vector2 knockbackVelocity;
+    public float knockbackFriction = 10f; // Controla quão rápido o empurrão para
+    // ------------------------------------------
 
-    // Variável para lembrar o tamanho original do boneco
+    [Header("Idle (Respiração)")]
+    public float breathSpeed = 2f;
+    public float breathAmount = 0.05f;
     private Vector3 defaultScale;
 
     [Header("Configurações do Flip & Waddle")]
     public float flipDuration = 0.15f;
     public float squashAmount = 0.1f;
-    public float waddleFrequency = 10f; // Velocidade do balanço
-    public float waddleAmplitude = 5f;  // Força do balanço (graus)
+    public float waddleFrequency = 10f;
+    public float waddleAmplitude = 5f;
 
     private bool isFacingRight = true;
     private bool isFlipping = false;
@@ -40,13 +43,12 @@ public class PlayerController : MonoBehaviour
     private GameObject interactableItem = null;
 
     [Header("Referência da Câmera")]
-    public CinemachineCamera activeCam; //Camera
+    public CinemachineCamera activeCam;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
 
-        // Segurança: Se você esqueceu de definir o visual, usa o transform raiz
         if (visualTransform == null)
             visualTransform = transform;
 
@@ -59,34 +61,23 @@ public class PlayerController : MonoBehaviour
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.y = Input.GetAxisRaw("Vertical");
 
+        // Teleporte (Debug)
         if (Input.GetKeyDown(KeyCode.C))
         {
-            // Teleporta para uma posição aleatória perto
             TeleportPlayer(transform.position + new Vector3(5, 5, 0));
         }
 
-        // 2. Impede o movimento na diagonal
-        if (movement.x != 0)
-        {
-            movement.y = 0;
-        }
+        // 2. Impede movimento diagonal puro (opcional do seu design)
+        if (movement.x != 0) movement.y = 0;
 
         // 3. Lógica de Flip
-        if (movement.x < 0 && isFacingRight)
-        { 
-            Flip();
-        }
-        else if (movement.x > 0 && !isFacingRight)
-        {
-            Flip();
-        }
+        if (movement.x < 0 && isFacingRight) Flip();
+        else if (movement.x > 0 && !isFacingRight) Flip();
 
-        // 4. Lógica do Waddle (Balanço) - NOVO!
+        // 4. Lógica do Waddle
         HandleWaddle();
 
-        // INTERAÇÃO / SOLTAR / ARREMESSAR
-
-        // Espaço: Pega item (mantive igual)
+        // 5. Interação
         if (Input.GetKeyDown(KeyCode.Space) && !isCarrying && interactableItem != null)
         {
             PickUpItem();
@@ -94,60 +85,67 @@ public class PlayerController : MonoBehaviour
 
         if (isCarrying)
         {
-            // Tecla G: Solta o item no chão (Drop Simples)
-            if (Input.GetKeyDown(KeyCode.G))
+            if (Input.GetKeyDown(KeyCode.G)) DropItem(false); // Drop
+            else if (Input.GetMouseButtonDown(1)) DropItem(true); // Throw
+        }
+    }
+
+    // --- AQUI ESTÁ A MUDANÇA PRINCIPAL (FÍSICA) ---
+    void FixedUpdate()
+    {
+        if (rb != null)
+        {
+            // 1. Calcula movimento normal (Teclado)
+            Vector2 normalMove = movement.normalized * moveSpeed;
+
+            // 2. Soma com o Recuo (Shotgun)
+            // Se knockbackVelocity for (0,0), ele anda normal. Se tiver valor, ele soma.
+            Vector2 finalVelocity = normalMove + knockbackVelocity;
+
+            // 3. Aplica o movimento combinado
+            rb.MovePosition(rb.position + finalVelocity * Time.fixedDeltaTime);
+
+            // 4. Reduz o recuo suavemente (Atrito)
+            if (knockbackVelocity.magnitude > 0.1f)
             {
-                DropItem(false); // False = Não é arremesso
+                knockbackVelocity = Vector2.Lerp(knockbackVelocity, Vector2.zero, knockbackFriction * Time.fixedDeltaTime);
             }
-            // Botão Direito Mouse: Arremessa (Throw)
-            else if (Input.GetMouseButtonDown(1))
+            else
             {
-                DropItem(true); // True = É arremesso
+                knockbackVelocity = Vector2.zero;
             }
         }
     }
 
-    void FixedUpdate()
+    // --- NOVO MÉTODO: Chamado pelo WeaponController ---
+    public void ApplyKnockback(Vector2 direction, float force)
     {
-        // Aplica o movimento ao Rigidbody
-        rb.MovePosition(rb.position + movement.normalized * moveSpeed * Time.fixedDeltaTime);
+        // Adiciona força instantânea ao vetor de recuo
+        knockbackVelocity += direction.normalized * force;
     }
 
     // --- Lógica do Balanço (Waddle) ---
     void HandleWaddle()
     {
-        // Se estiver "Flipping", não mexe na escala nem rotação para não brigar com a corrotina
         if (isFlipping) return;
 
-        // ESTADO 1: ANDANDO (Waddle)
         if (movement.magnitude > 0.1f)
         {
-            // Ginga (Rotação)
             float angle = Mathf.Sin(Time.time * waddleFrequency) * waddleAmplitude;
             visualTransform.localRotation = Quaternion.Euler(0, 0, angle);
 
-            // Garante que a escala volte ao normal enquanto anda (sem respiração)
-            // Mantendo a direção (Sinal do X) correta
             float currentSignX = Mathf.Sign(visualTransform.localScale.x);
             visualTransform.localScale = new Vector3(Mathf.Abs(defaultScale.x) * currentSignX, defaultScale.y, defaultScale.z);
         }
-        // ESTADO 2: PARADO (Breathing)
         else
         {
-            // Zera a rotação suavemente
             visualTransform.localRotation = Quaternion.Lerp(visualTransform.localRotation, Quaternion.identity, Time.deltaTime * 10f);
-
-            // Respiração (Escala Y)
-            // Cálculo: Seno varia de -1 a 1. Transformamos para algo como 0.95 a 1.05
             float breathFactor = Mathf.Sin(Time.time * breathSpeed) * breathAmount;
-
-            // Mantém o lado que ele está olhando (Sinal do X)
             float currentSignX = Mathf.Sign(visualTransform.localScale.x);
 
-            // Aplica a escala
             visualTransform.localScale = new Vector3(
-                Mathf.Abs(defaultScale.x) * currentSignX, // Mantém largura original
-                defaultScale.y + breathFactor,            // Respira na altura
+                Mathf.Abs(defaultScale.x) * currentSignX,
+                defaultScale.y + breathFactor,
                 defaultScale.z
             );
         }
@@ -162,16 +160,13 @@ public class PlayerController : MonoBehaviour
     IEnumerator FlipRoutine()
     {
         isFlipping = true;
-
-        // Adaptado para usar visualTransform.localScale ao invés de transform.localScale
         float elapsedTime = 0f;
         Vector3 startScale = visualTransform.localScale;
 
-        // Garante que o Squash mantenha o sinal correto
         float currentXSign = Mathf.Sign(startScale.x);
         Vector3 targetSquashScale = new Vector3(Mathf.Abs(startScale.x) * squashAmount * currentXSign, startScale.y, startScale.z);
 
-        // 1. AMASSAR (Squash)
+        // 1. Squash
         while (elapsedTime < flipDuration / 2)
         {
             visualTransform.localScale = Vector3.Lerp(startScale, targetSquashScale, (elapsedTime / (flipDuration / 2)));
@@ -179,12 +174,12 @@ public class PlayerController : MonoBehaviour
             yield return null;
         }
 
-        // 2. INVERTER A DIREÇÃO
+        // 2. Inverter
         isFacingRight = !isFacingRight;
         Vector3 flippedScale = startScale;
         flippedScale.x *= -1;
 
-        // 3. ESTICAR DE VOLTA (Stretch)
+        // 3. Stretch
         elapsedTime = 0f;
         while (elapsedTime < flipDuration / 2)
         {
@@ -203,21 +198,27 @@ public class PlayerController : MonoBehaviour
     {
         currentItem = interactableItem;
 
-        // Configuração de Hierarquia
         currentItem.transform.SetParent(weaponHolder);
         currentItem.transform.localPosition = Vector3.zero;
         currentItem.transform.localRotation = Quaternion.identity;
         currentItem.transform.localScale = Vector3.one;
 
-        // LÓGICA DE FÍSICA: Desliga o Rigidbody para a arma não cair da mão
         Rigidbody2D itemRb = currentItem.GetComponent<Rigidbody2D>();
-        if (itemRb != null) itemRb.simulated = false; // Desativa a simulação física
+        if (itemRb != null) itemRb.simulated = false;
 
-        // Ativa a mira
         WeaponAim aimScript = currentItem.GetComponent<WeaponAim>();
         if (aimScript != null) aimScript.enabled = true;
 
         currentItem.GetComponent<Collider2D>().enabled = false;
+
+        // --- NOVO: Coleta no inventário ---
+        WeaponController weapon = currentItem.GetComponent<WeaponController>();
+        WeaponInventory inventory = GetComponent<WeaponInventory>();
+        if (weapon != null && inventory != null)
+        {
+            inventory.CollectWeapon(weapon);
+        }
+        // ----------------------------------
 
         isCarrying = true;
         interactableItem = null;
@@ -225,36 +226,37 @@ public class PlayerController : MonoBehaviour
 
     private void DropItem(bool isThrowing)
     {
-        // 1. Guarda a posição ATUAL do Player (pivô) antes de desconectar
-        Vector3 playerPosition = transform.position;
+        if (currentItem == null) return;
 
-        // 2. Tira do Pai (Desconecta da mão/WeaponHolder)
-        currentItem.transform.SetParent(null);
+        Vector3 playerPos = transform.position;
+        WeaponController weapon = currentItem.GetComponent<WeaponController>();
+        WeaponInventory inventory = GetComponent<WeaponInventory>();
 
-        ThrowableWeapon throwable = currentItem.GetComponent<ThrowableWeapon>();
-
-        if (throwable != null)
+        if (weapon != null && inventory != null)
         {
-            if (isThrowing) // ARREMESSO
+            inventory.RemoveWeaponFromInventory(weapon);
+        }
+
+        if (weapon != null)
+        {
+            if (isThrowing)
             {
-                // Calcula direção
                 Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 mousePos.z = 0;
                 Vector2 direction = (mousePos - transform.position).normalized;
-
-                // A arma sai da posição atual da mão (WeaponHolder) para parecer natural
-                throwable.PrepareThrow(direction, throwForce);
+                weapon.PerformThrow(direction);
             }
-            else // DROP (SOLTAR NO CHÃO)
+            else
             {
-                // A arma é teleportada para o pé do player (playerPosition)
-                throwable.PrepareDrop(playerPosition);
+                weapon.PerformDrop(playerPos);
             }
         }
+        else
+        {
+            currentItem.transform.SetParent(null);
+        }
 
-        // Limpeza
         currentItem = null;
-        isCarrying = false;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -267,26 +269,13 @@ public class PlayerController : MonoBehaviour
         if (other.gameObject == interactableItem) interactableItem = null;
     }
 
-    // Chame essa função em vez de mudar o transform.position diretamente
     public void TeleportPlayer(Vector3 newPosition)
     {
-        // 1. Calcula a diferença (Delta) de onde ele estava para onde vai
         Vector3 positionDelta = newPosition - transform.position;
-
-        // 2. Move o Player fisicamente
         transform.position = newPosition;
-
-        // 3. Avisa ao Cinemachine que o alvo "Warpou" (Teleportou)
-        // Isso faz a câmera ignorar o Damping por 1 frame e pular junto.
         if (activeCam != null)
         {
             activeCam.OnTargetObjectWarped(transform, positionDelta);
         }
-
-      
     }
-
-
-
-
 }

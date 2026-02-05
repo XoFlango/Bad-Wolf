@@ -8,6 +8,9 @@ public class EnemyAI : MonoBehaviour
     private Transform player;
     private Rigidbody2D rb;
 
+    [Header("Debug / Testes")]
+    public bool isAIActive = true; // Desmarque isso no Inspector para ele parar
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -22,6 +25,14 @@ public class EnemyAI : MonoBehaviour
 
     void FixedUpdate()
     {
+
+        // 1. CHECAGEM DE TRAVA (NOVO)
+        // Se a IA estiver desligada, zera a velocidade e para o código aqui.
+        if (!isAIActive)
+        {
+            rb.linearVelocity = Vector2.zero;
+            return;
+        }
         // Se o player morreu ou não existe, o inimigo para
         if (player == null)
         {
