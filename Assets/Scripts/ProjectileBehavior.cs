@@ -28,12 +28,13 @@ public class ProjectileBehavior : MonoBehaviour
         // --- A LISTA BRANCA (WHITELIST) ---
         // Verificamos se o objeto tem uma das tags permitidas
         Debug.Log($"[BALA] Nasci e bati em: {hitInfo.name} (Tag: {hitInfo.tag})");
+        bool isBoss = hitInfo.CompareTag("Boss");
         bool isEnemy = hitInfo.CompareTag("Enemy");
         bool isProp = hitInfo.CompareTag("Prop");
         bool isWall = hitInfo.CompareTag("Wall"); // Paredes/Cenário
 
         // Se NÃO for nenhum desses três, ignora e deixa passar
-        if (!isEnemy && !isProp && !isWall)
+        if (!isEnemy && !isProp && !isWall && !isBoss)
         {
             // Debug opcional para saber o que ignorou
             Debug.Log($"[Bala] Ignorou colisão com: {hitInfo.name}");
@@ -57,6 +58,19 @@ public class ProjectileBehavior : MonoBehaviour
                 enemyHealth.TakeDamage(damage);
             }
           
+        }
+
+        if (isBoss)
+        {
+            // Substitua 'EnemyHealth' pelo nome EXATO do script de vida dos seus inimigos
+            EnemyHealth enemyHealth = hitInfo.GetComponent<EnemyHealth>();
+
+            if (enemyHealth != null)
+            {
+                // O script do inimigo deve ter o método TakeDamage igual ao Health
+                enemyHealth.TakeDamage(damage);
+            }
+
         }
         // CASO 2: É PROP/OBJETO? (Usa o script de vida genérico)
         else if (isProp)

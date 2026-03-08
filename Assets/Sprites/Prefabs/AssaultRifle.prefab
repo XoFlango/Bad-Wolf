@@ -45,7 +45,7 @@ GameObject:
   - component: {fileID: -5534626253653898716}
   - component: {fileID: 4960042007215925654}
   - component: {fileID: 7364810340578579324}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: AssaultRifle
   m_TagString: Item
   m_Icon: {fileID: 0}

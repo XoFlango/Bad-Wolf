@@ -13,7 +13,10 @@ GameObject:
   - component: {fileID: 7801133055257603955}
   - component: {fileID: -6593181219837126272}
   - component: {fileID: -1714343015893708829}
-  m_Layer: 0
+  - component: {fileID: 45581371838841883}
+  - component: {fileID: 8658642156850874825}
+  - component: {fileID: -1137751257998421967}
+  m_Layer: 7
   m_Name: NormalEnemy_holder_0
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -181,3 +184,59 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!114 &45581371838841883
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3692376310682694133}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08f904e84984bce4e9d993bf6983e132, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  minDamage: 5
+  maxDamage: 10
+  damageCooldown: 1
+  boxSize: {x: 1, y: 1}
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 64
+--- !u!114 &8658642156850874825
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3692376310682694133}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f30c308c220dfe146a7a62830dc388b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 3
+  stoppingDistance: 0.8
+  isAIActive: 1
+--- !u!114 &-1137751257998421967
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3692376310682694133}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8cd24d5ae769fff45af7ae5678fba632, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lootList:
+  - nome: Pistol Ammo
+    itemPrefab: {fileID: 330221036288348831, guid: 3a75049d71c67bd44a3cef7e2ab64c93, type: 3}
+    dropChance: 40
+  - nome: AR Ammo
+    itemPrefab: {fileID: 8037193394839690023, guid: 17e6d9df619793a499e1b90d78be9356, type: 3}
+    dropChance: 15
+  - nome: Shotgun Ammo
+    itemPrefab: {fileID: 6428465698992642618, guid: 1674bb6eee4d74e4e9f0d92b25ab5ddf, type: 3}
+    dropChance: 20
