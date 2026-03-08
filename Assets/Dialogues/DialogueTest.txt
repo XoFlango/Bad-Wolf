@@ -1,0 +1,3 @@
+Player : Olá, quero comprar
+Comerciante : Hahaha... Uariu boing
+Player : Eu não vim aqui para conversar.

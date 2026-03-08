@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: -469869259459838211}
   - component: {fileID: -8969187649569372224}
   - component: {fileID: 5337480898091211414}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Shotgun
   m_TagString: Item
   m_Icon: {fileID: 0}
@@ -214,7 +214,7 @@ MonoBehaviour:
   weaponType: 2
   projectilePrefab: {fileID: 5853217788186038540, guid: 2eac42050b48df140a2bc12fde939c63, type: 3}
   firePoint: {fileID: 5250728307298327156}
-  fireRate: 0.5
+  fireRate: 0.8
   damage: 10
   maxAmmo: 6
   currentAmmo: 6

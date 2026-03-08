@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5403379617651151737}
   - component: {fileID: 4197257441994473442}
   - component: {fileID: -1793439276122586863}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Assault Riffle Ammo
   m_TagString: Item
   m_Icon: {fileID: 0}

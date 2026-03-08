@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: -9155331555989588353}
   - component: {fileID: 8881105487390050}
   - component: {fileID: 4349547981360872242}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Pistol Holder_0
   m_TagString: Item
   m_Icon: {fileID: 0}
