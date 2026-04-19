@@ -1,10 +1,19 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Sprites/Backgrounds/blackpic).jpg.meta
 guid: 89f7d33127a871e4c95332d58e60fa18
 TextureImporter:
   internalIDToNameTable:
   - first:
       213: 3232483334606997001
     second: blackpic)_0
+========
+guid: 5d6a4462109f9e24abb4b2a248f98141
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 417825429968606110
+    second: chestOpened_0
+>>>>>>>> 70602032c613a5c46d08725a5915dff918dafbc7:Assets/Sprites/Holders/chestOpened.png.meta
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +46,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -51,7 +60,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 16
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -75,7 +84,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -100,13 +109,22 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
+<<<<<<<< HEAD:Assets/Sprites/Backgrounds/blackpic).jpg.meta
       name: blackpic)_0
+========
+      name: chestOpened_0
+>>>>>>>> 70602032c613a5c46d08725a5915dff918dafbc7:Assets/Sprites/Holders/chestOpened.png.meta
       rect:
         serializedVersion: 2
         x: 0
         y: 0
+<<<<<<<< HEAD:Assets/Sprites/Backgrounds/blackpic).jpg.meta
         width: 225
         height: 225
+========
+        width: 16
+        height: 16
+>>>>>>>> 70602032c613a5c46d08725a5915dff918dafbc7:Assets/Sprites/Holders/chestOpened.png.meta
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +133,13 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
+<<<<<<<< HEAD:Assets/Sprites/Backgrounds/blackpic).jpg.meta
       spriteID: 906ce9567761cdc20800000000000000
       internalID: 3232483334606997001
+========
+      spriteID: e93576bc30a6cc500800000000000000
+      internalID: 417825429968606110
+>>>>>>>> 70602032c613a5c46d08725a5915dff918dafbc7:Assets/Sprites/Holders/chestOpened.png.meta
       vertices: []
       indices: 
       edges: []
@@ -135,7 +158,11 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
+<<<<<<<< HEAD:Assets/Sprites/Backgrounds/blackpic).jpg.meta
       blackpic)_0: 3232483334606997001
+========
+      chestOpened_0: 417825429968606110
+>>>>>>>> 70602032c613a5c46d08725a5915dff918dafbc7:Assets/Sprites/Holders/chestOpened.png.meta
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

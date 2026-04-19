@@ -1,10 +1,19 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Sprites/Holders/Coin.png.meta
+guid: a03ba255ead5acd4498ec8a5c2af7ab6
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -3338749442709606003
+    second: Coin_0
+========
 guid: 13d1a2024e42f6e46b29431e2fcf98ee
 TextureImporter:
   internalIDToNameTable:
   - first:
       213: 7552218760340626732
     second: Boss1_0
+>>>>>>>> 70602032c613a5c46d08725a5915dff918dafbc7:Assets/Sprites/Holders/Boss1.png.meta
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -75,7 +84,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -100,6 +109,15 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
+<<<<<<<< HEAD:Assets/Sprites/Holders/Coin.png.meta
+      name: Coin_0
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 1
+        width: 13
+        height: 13
+========
       name: Boss1_0
       rect:
         serializedVersion: 2
@@ -107,6 +125,7 @@ TextureImporter:
         y: 0
         width: 46
         height: 64
+>>>>>>>> 70602032c613a5c46d08725a5915dff918dafbc7:Assets/Sprites/Holders/Boss1.png.meta
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +134,13 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
+<<<<<<<< HEAD:Assets/Sprites/Holders/Coin.png.meta
+      spriteID: d81b24142116aa1d0800000000000000
+      internalID: -3338749442709606003
+========
       spriteID: c2dd42cf2fedec860800000000000000
       internalID: 7552218760340626732
+>>>>>>>> 70602032c613a5c46d08725a5915dff918dafbc7:Assets/Sprites/Holders/Boss1.png.meta
       vertices: []
       indices: 
       edges: []
@@ -135,7 +159,11 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
+<<<<<<<< HEAD:Assets/Sprites/Holders/Coin.png.meta
+      Coin_0: -3338749442709606003
+========
       Boss1_0: 7552218760340626732
+>>>>>>>> 70602032c613a5c46d08725a5915dff918dafbc7:Assets/Sprites/Holders/Boss1.png.meta
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

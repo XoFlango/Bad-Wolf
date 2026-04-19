@@ -1,10 +1,19 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Sprites/Holders/Mercador.png.meta
+guid: 6ef2a1995302bb24dae056697af64393
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -8079423694444749747
+    second: Mercador_0
+========
 guid: a03ba255ead5acd4498ec8a5c2af7ab6
 TextureImporter:
   internalIDToNameTable:
   - first:
       213: -3338749442709606003
     second: Coin_0
+>>>>>>>> 70602032c613a5c46d08725a5915dff918dafbc7:Assets/Sprites/Holders/Coin.png.meta
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,6 +109,15 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
+<<<<<<<< HEAD:Assets/Sprites/Holders/Mercador.png.meta
+      name: Mercador_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 32
+        height: 29
+========
       name: Coin_0
       rect:
         serializedVersion: 2
@@ -107,6 +125,7 @@ TextureImporter:
         y: 1
         width: 13
         height: 13
+>>>>>>>> 70602032c613a5c46d08725a5915dff918dafbc7:Assets/Sprites/Holders/Coin.png.meta
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +134,13 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
+<<<<<<<< HEAD:Assets/Sprites/Holders/Mercador.png.meta
+      spriteID: d4c1fbed4fe10ef80800000000000000
+      internalID: -8079423694444749747
+========
       spriteID: d81b24142116aa1d0800000000000000
       internalID: -3338749442709606003
+>>>>>>>> 70602032c613a5c46d08725a5915dff918dafbc7:Assets/Sprites/Holders/Coin.png.meta
       vertices: []
       indices: 
       edges: []
@@ -135,7 +159,11 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
+<<<<<<<< HEAD:Assets/Sprites/Holders/Mercador.png.meta
+      Mercador_0: -8079423694444749747
+========
       Coin_0: -3338749442709606003
+>>>>>>>> 70602032c613a5c46d08725a5915dff918dafbc7:Assets/Sprites/Holders/Coin.png.meta
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
