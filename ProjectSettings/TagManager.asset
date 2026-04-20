@@ -8,6 +8,7 @@ TagManager:
   - Enemy
   - Undefined
   - Projectile
+  - Item
   layers:
   - Default
   - TransparentFX
@@ -44,6 +45,12 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: DeathDrop
+    uniqueID: 3319212895
+    locked: 0
+  - name: Player
+    uniqueID: 441520515
     locked: 0
   m_RenderingLayers:
   - Default
