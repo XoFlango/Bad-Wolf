@@ -3,43 +3,101 @@ using UnityEngine;
 public class WeaponShooter : MonoBehaviour
 {
     [Header("Configurações de Tiro")]
-    public GameObject projectilePrefab; // Arraste o prefab da bala aqui
-    public Transform firePoint;         // O ponto vazio na ponta da arma (Muzzle)
-    public float fireRate = 0.5f;       // Tempo entre tiros
+    public GameObject projectilePrefab;
+    public Transform firePoint;
+    public float fireRate = 0.5f;
+
+    [Header("Munição")]
+    public int maxMagSize = 7;      // Capacidade da pistola (7)
+    public int currentAmmo;         // Balas atuais na arma
+    public int reserveAmmo = 0;     // Balas no bolso (total acumulado)
 
     private float nextFireTime = 0f;
-    private ThrowableWeapon throwable;  // Para checar se a arma não está voando
+  //  private ThrowableWeapon throwable;
+
+    // Propriedade para checar se está na mão do player
+    private bool IsEquipped => transform.parent != null;
 
     void Start()
     {
-        throwable = GetComponent<ThrowableWeapon>();
+     //   throwable = GetComponent<ThrowableWeapon>();
+
+        // A arma começa carregada (Regra que você pediu)
+        currentAmmo = maxMagSize;
+
+        // Opcional: Começar com 0 de reserva ou algum valor
+        reserveAmmo = 0;
     }
 
     void Update()
     {
-        // Se a arma não tem pai (está solta no mundo), ela ignora o clique.
-        if (transform.parent == null) return;
+        if (!IsEquipped) return;
+        //if (throwable != null && throwable.isFlying) return;
 
-        // Se a arma estiver voando (arremessada), não pode atirar
-        if (throwable != null && throwable.isFlying) return;
+        // Recarregar (Tecla R)
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            Reload();
+        }
 
-        // Input de Tiro (Botão Esquerdo)
+        // Atirar
         if (Input.GetButton("Fire1") && Time.time >= nextFireTime)
         {
-            Shoot();
-            nextFireTime = Time.time + fireRate;
+            if (currentAmmo > 0)
+            {
+                Shoot();
+                nextFireTime = Time.time + fireRate;
+            }
+            else
+            {
+                Debug.Log("Clic! Sem munição. Aperte R.");
+                // Aqui entraria um som de "clique" seco
+            }
         }
     }
 
     void Shoot()
     {
-        if (firePoint == null || projectilePrefab == null)
+        if (firePoint == null || projectilePrefab == null) return;
+
+        currentAmmo--; // Gasta uma bala
+        Instantiate(projectilePrefab, firePoint.position, firePoint.rotation);
+
+        // Debug para você acompanhar
+        Debug.Log($"Pew! Munição: {currentAmmo}/{maxMagSize} | Reserva: {reserveAmmo}");
+    }
+
+    // Método chamado pelo script da Caixa de Munição
+    public void AddAmmoToReserve(int amount)
+    {
+        reserveAmmo += amount;
+        Debug.Log($"Pegou munição! Total na reserva: {reserveAmmo}");
+
+        // Opcional: Se a arma estiver vazia, recarrega automaticamente?
+        // if (currentAmmo == 0) Reload();
+    }
+
+    void Reload()
+    {
+        // Se já está cheia ou não tem reserva, não faz nada
+        if (currentAmmo == maxMagSize || reserveAmmo <= 0) return;
+
+        // Calcula quantas balas faltam para encher o pente
+        int bulletsNeeded = maxMagSize - currentAmmo;
+
+        // Verifica se tem balas suficientes na reserva
+        if (reserveAmmo >= bulletsNeeded)
         {
-            Debug.LogWarning("Faltam referências no WeaponShooter!");
-            return;
+            currentAmmo += bulletsNeeded;
+            reserveAmmo -= bulletsNeeded;
+        }
+        else
+        {
+            // Se tiver menos na reserva do que o necessário, pega tudo que tem
+            currentAmmo += reserveAmmo;
+            reserveAmmo = 0;
         }
 
-        // Instancia a bala na posição e ROTAÇÃO da arma/firePoint
-        Instantiate(projectilePrefab, firePoint.position, firePoint.rotation);
+        Debug.Log("Recarregando... Tchack-Tchack!");
     }
 }
