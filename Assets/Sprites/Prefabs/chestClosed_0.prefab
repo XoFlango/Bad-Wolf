@@ -107,7 +107,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChestController
   closedSprite: {fileID: 7906977341874053163, guid: 16489bdd62b21364ba9814c267be69f8, type: 3}
-  openSprite: {fileID: 417825429968606110, guid: 5d6a4462109f9e24abb4b2a248f98141, type: 3}
+  openSprite: {fileID: 417825429968606110, guid: 22c2d3aa616039244a1afed40794c030, type: 3}
   coinPrefab: {fileID: 7833293788176007497, guid: 03f7815a3728d304d8402010ffbd07e8, type: 3}
   promptUI: {fileID: 0}
 --- !u!61 &-7529104957155751353

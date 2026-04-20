@@ -21,6 +21,13 @@ public class DialogueUI : MonoBehaviour
     private bool estaDigitando = false;
     private Coroutine corrotinaDigitacao;
 
+    public static DialogueUI instance;
+
+    void Awake()
+    {
+        if (instance == null) { instance = this; }
+        else { Destroy(gameObject); }
+    }
     void Start()
     {
         dialoguePanel.SetActive(false);
@@ -91,6 +98,7 @@ public class DialogueUI : MonoBehaviour
             yield return new WaitForSeconds(typingSpeed);
         }
         estaDigitando = false;
+        ///buacar
     }
 
     void PularDigitacao()

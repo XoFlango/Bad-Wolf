@@ -13,9 +13,9 @@ GameObject:
   - component: {fileID: 7116322320872166004}
   - component: {fileID: 2285760144713102932}
   - component: {fileID: -1892693556113095825}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Coin_0
-  m_TagString: Untagged
+  m_TagString: Item
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -84,12 +84,12 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -3338749442709606003, guid: a03ba255ead5acd4498ec8a5c2af7ab6, type: 3}
+  m_Sprite: {fileID: -3338749442709606003, guid: 1936dfdede391094e8b6d5a343b3ebf5, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.13, y: 0.13}
+  m_Size: {x: 0.8125, y: 0.8125}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1

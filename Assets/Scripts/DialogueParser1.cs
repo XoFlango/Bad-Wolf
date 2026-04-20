@@ -18,7 +18,7 @@ public class DialogueParser : MonoBehaviour
     [Header("Resultado (Visível no Inspector)")]
     public List<LinhaDeDialogo> dialogosLidos = new List<LinhaDeDialogo>();
 
-    void Start()
+    void Awake()
     {
         CarregarDialogos();
     }

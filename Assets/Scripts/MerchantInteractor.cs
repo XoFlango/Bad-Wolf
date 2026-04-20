@@ -21,7 +21,7 @@ public class MerchantInteractor : MonoBehaviour
     void Update()
     {
         // Se o player está perto, não está conversando e apertou E
-        if (isPlayerNear && !isInConversation && Input.GetKeyDown(KeyCode.E))
+        if (isPlayerNear && !DialogueUI.isDialogueActive && Input.GetKeyDown(KeyCode.E))
         {
             StartInteraction();
         }
@@ -32,12 +32,8 @@ public class MerchantInteractor : MonoBehaviour
         isInConversation = true;
         if (promptUI != null) promptUI.SetActive(false);
 
-        // Inicia o sistema de diálogo com as linhas lidas do .txt
-        dialogueUI.IniciarDialogo(dialogueParser.dialogosLidos);
-
-        // O sistema de diálogo deve avisar quando terminar.
-        // Por enquanto, usaremos uma Invoke ou checagem simples.
-        Debug.Log($"Iniciando conversa com {nomeDoComerciante}");
+        // Chama a instância imortal que veio do Main Menu
+        DialogueUI.instance.IniciarDialogo(dialogueParser.dialogosLidos);
     }
 
     // --- LÓGICA DE COMÉRCIO (Pseudo-código) ---
@@ -65,7 +61,8 @@ public class MerchantInteractor : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             isPlayerNear = true;
-            if (!isInConversation && promptUI != null) promptUI.SetActive(true);
+            // APENAS ligue o prompt, NÃO chame StartInteraction aqui!
+            if (promptUI != null) promptUI.SetActive(true);
         }
     }
 
