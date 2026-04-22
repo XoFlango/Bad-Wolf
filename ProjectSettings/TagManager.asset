@@ -25,7 +25,7 @@ TagManager:
   - TileMap
   - Itens
   - Obstacles
-  - 
+  - Props
   - 
   - 
   - 
@@ -50,14 +50,17 @@ TagManager:
   - name: WorldMap
     uniqueID: 2980372053
     locked: 0
-  - name: Entities
-    uniqueID: 812529033
+  - name: Props
+    uniqueID: 1595837357
+    locked: 0
+  - name: Itens
+    uniqueID: 1463477551
     locked: 0
   - name: Player
     uniqueID: 1614730027
     locked: 0
-  - name: Itens
-    uniqueID: 1463477551
+  - name: Entities
+    uniqueID: 812529033
     locked: 0
   - name: Default
     uniqueID: 0

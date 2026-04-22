@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5782894684643180691}
   - component: {fileID: -7529104957155751353}
   - component: {fileID: -8222701141791680816}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: chestClosed_0
   m_TagString: Prop
   m_Icon: {fileID: 0}
@@ -80,8 +80,8 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 1595837357
+  m_SortingLayer: -3
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 7906977341874053163, guid: 16489bdd62b21364ba9814c267be69f8, type: 3}
