@@ -1,4 +1,21 @@
 using UnityEngine;
+using System.Collections.Generic; // Necessário para usar a 'List'
+
+// --- NOVA CLASSE DE LOOT ---
+// [System.Serializable] faz essa classe aparecer bonitinha no Inspector da Unity
+[System.Serializable]
+public class LootItem
+{
+    public string itemName = "Novo Item"; // Só para ajudar na organização visual no Inspector
+    public GameObject itemPrefab;
+
+    [Tooltip("Chance de 0 a 100 de este item dropar")]
+    [Range(0f, 100f)]
+    public float dropChance = 50f;
+
+    public int minAmount = 1;
+    public int maxAmount = 1;
+}
 
 public class ChestController : MonoBehaviour
 {
@@ -7,14 +24,15 @@ public class ChestController : MonoBehaviour
     public Sprite openSprite;
     private SpriteRenderer sr;
 
-    [Header("Áudio")] // --- NOVO CABEÇALHO PARA O SOM ---
+    [Header("Áudio")]
     [Tooltip("Som tocado quando o baú é aberto")]
     public AudioClip openSound;
     private AudioSource audioSource;
 
     [Header("Configurações de Loot")]
-    public GameObject coinPrefab;
-    // O aviso "Pressione E para abrir"
+    [Tooltip("Adicione aqui todos os itens que este baú pode cuspir!")]
+    public List<LootItem> possibleLoot; // Substitui o antigo 'coinPrefab'
+
     public GameObject promptUI;
 
     private bool isPlayerNear = false;
@@ -23,9 +41,8 @@ public class ChestController : MonoBehaviour
     void Start()
     {
         sr = GetComponent<SpriteRenderer>();
-        sr.sprite = closedSprite; // Garante que começa fechado
+        sr.sprite = closedSprite;
 
-        // --- CONFIGURAÇÃO AUTOMÁTICA DE ÁUDIO ---
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null)
         {
@@ -38,7 +55,6 @@ public class ChestController : MonoBehaviour
 
     void Update()
     {
-        // Se o player está perto, o baú tá fechado, e apertou E
         if (isPlayerNear && !isOpen && Input.GetKeyDown(KeyCode.E))
         {
             OpenChest();
@@ -52,40 +68,50 @@ public class ChestController : MonoBehaviour
 
         if (promptUI != null) promptUI.SetActive(false); // Esconde o aviso
 
-        // --- TOCA O SOM DE ABRIR AQUI ---
+        // Toca o som
         if (openSound != null && audioSource != null)
         {
             audioSource.PlayOneShot(openSound);
         }
 
-        // Sorteia de 1 a 3 moedas
-        int coinAmount = Random.Range(1, 4);
-
-        for (int i = 0; i < coinAmount; i++)
+        // Passa por cada item da lista
+        foreach (LootItem loot in possibleLoot)
         {
-            SpawnJumpingCoin();
+            if (loot.itemPrefab == null) continue;
+
+            float roll = Random.Range(0f, 100f);
+
+            if (roll <= loot.dropChance)
+            {
+                int amountToDrop = Random.Range(loot.minAmount, loot.maxAmount + 1);
+
+                // --- O SEU DEBUG LOG AQUI ---
+                Debug.Log($"[BAÚ] Dropou: {amountToDrop}x {loot.itemName}");
+
+                for (int i = 0; i < amountToDrop; i++)
+                {
+                    SpawnJumpingItem(loot.itemPrefab);
+                }
+            }
         }
     }
 
-    void SpawnJumpingCoin()
+    // --- FUNÇÃO DE SPAWN ATUALIZADA ---
+    // Agora pede um 'prefab' como argumento, para servir pra qualquer coisa
+    void SpawnJumpingItem(GameObject prefab)
     {
-        GameObject coin = Instantiate(coinPrefab, transform.position, Quaternion.identity);
+        GameObject item = Instantiate(prefab, transform.position, Quaternion.identity);
 
-        Rigidbody2D rb = coin.GetComponent<Rigidbody2D>();
+        Rigidbody2D rb = item.GetComponent<Rigidbody2D>();
         if (rb != null)
         {
-            // 1. Pega uma direção aleatória em 360 graus (um círculo ao redor do baú)
             Vector2 randomDirection = Random.insideUnitCircle.normalized;
-
-            // 2. Define a força da explosão
             float scatterForce = Random.Range(4f, 8f);
 
-            // 3. Aplica o empurrão
             rb.AddForce(randomDirection * scatterForce, ForceMode2D.Impulse);
         }
     }
 
-    // --- DETECÇÃO DO PLAYER ---
     void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player") && !isOpen)

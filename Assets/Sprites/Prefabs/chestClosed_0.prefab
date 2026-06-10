@@ -81,7 +81,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 1595837357
-  m_SortingLayer: -3
+  m_SortingLayer: -4
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 7906977341874053163, guid: 16489bdd62b21364ba9814c267be69f8, type: 3}
@@ -108,7 +108,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ChestController
   closedSprite: {fileID: 7906977341874053163, guid: 16489bdd62b21364ba9814c267be69f8, type: 3}
   openSprite: {fileID: 417825429968606110, guid: 22c2d3aa616039244a1afed40794c030, type: 3}
-  coinPrefab: {fileID: 7833293788176007497, guid: 03f7815a3728d304d8402010ffbd07e8, type: 3}
+  openSound: {fileID: 8300000, guid: 1d8dac1134cff88429b3d06eb7bfadad, type: 3}
+  possibleLoot:
+  - itemName: 
+    itemPrefab: {fileID: 7833293788176007497, guid: 03f7815a3728d304d8402010ffbd07e8, type: 3}
+    dropChance: 46
+    minAmount: 1
+    maxAmount: 10
+  - itemName: Pistol Ammo
+    itemPrefab: {fileID: 330221036288348831, guid: 3a75049d71c67bd44a3cef7e2ab64c93, type: 3}
+    dropChance: 60
+    minAmount: 1
+    maxAmount: 3
+  - itemName: AR Ammo
+    itemPrefab: {fileID: 8037193394839690023, guid: 17e6d9df619793a499e1b90d78be9356, type: 3}
+    dropChance: 26
+    minAmount: 1
+    maxAmount: 2
+  - itemName: Shotgun Ammo
+    itemPrefab: {fileID: 6428465698992642618, guid: 1674bb6eee4d74e4e9f0d92b25ab5ddf, type: 3}
+    dropChance: 18
+    minAmount: 1
+    maxAmount: 2
   promptUI: {fileID: 0}
 --- !u!61 &-7529104957155751353
 BoxCollider2D:

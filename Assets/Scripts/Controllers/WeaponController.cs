@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 using Unity.Cinemachine;
 
 public enum WeaponType { Pistol = 0, AssaultRifle = 1, Shotgun = 2 }
@@ -19,12 +20,20 @@ public class WeaponController : MonoBehaviour
     public float fireRate = 0.5f;
     public int damage = 10;
 
-    [Header("Áudio")] // --- NOVO CABEÇALHO PARA O SOM ---
-    public AudioClip shootSound;
+    [Header("Precisão (Spread)")]
+    [Tooltip("Graus de variação do tiro. 0 = laser perfeito. 5 = espalhamento leve.")]
+    public float bulletSpread = 3f;
 
-    [Header("Munição")]
+    [Header("Áudio")]
+    public AudioClip shootSound;
+    public AudioClip reloadSound;
+
+    [Header("Munição e Recarga")]
     public int maxAmmo = 30;
     public int currentAmmo;
+    public float reloadDuration = 2.0f;
+
+    private bool isReloading = false;
     private PlayerAmmoInventory playerAmmoInv;
 
     [Header("Shotgun")]
@@ -43,7 +52,6 @@ public class WeaponController : MonoBehaviour
     private Rigidbody2D rb;
     private Collider2D col;
     private CinemachineImpulseSource impulseSource;
-    private AudioSource audioSource; // --- NOVO COMPONENTE DE ÁUDIO ---
 
     private bool IsAutomatic => weaponType == WeaponType.AssaultRifle;
 
@@ -54,14 +62,7 @@ public class WeaponController : MonoBehaviour
         impulseSource = GetComponent<CinemachineImpulseSource>();
         currentAmmo = maxAmmo;
 
-        // --- CONFIGURAÇÃO DO ÁUDIO ---
-        // Pega o AudioSource se já existir, ou cria um automaticamente na arma
-        audioSource = GetComponent<AudioSource>();
-        if (audioSource == null)
-        {
-            audioSource = gameObject.AddComponent<AudioSource>();
-        }
-        audioSource.playOnAwake = false; // Garante que a arma não atire sozinha ao nascer
+        // Removemos a criação do AudioSource na arma! Agora a responsabilidade é do Player.
     }
 
     void Update()
@@ -73,9 +74,28 @@ public class WeaponController : MonoBehaviour
         HandleReload();
     }
 
-    // --- TIRO ---
+    // --- NOVA FUNÇÃO: Busca o Áudio do Player ---
+    private AudioSource GetPlayerAudio()
+    {
+        if (transform.parent == null) return null;
+
+        // Procura o AudioSource no Player
+        AudioSource playerAudio = transform.parent.GetComponent<AudioSource>();
+
+        // Se o Player não tiver um, cria um silenciosamente
+        if (playerAudio == null)
+        {
+            playerAudio = transform.parent.gameObject.AddComponent<AudioSource>();
+            playerAudio.playOnAwake = false;
+        }
+
+        return playerAudio;
+    }
+
     void HandleShooting()
     {
+        if (isReloading) return;
+
         bool triggerPulled = IsAutomatic ? Input.GetButton("Fire1") : Input.GetButtonDown("Fire1");
 
         if (triggerPulled && Time.time >= nextFireTime)
@@ -99,19 +119,21 @@ public class WeaponController : MonoBehaviour
         int reserve = (playerAmmoInv != null) ? playerAmmoInv.GetAmmoCount(weaponType) : 0;
         Debug.Log($"[ARMA] {weaponType} | Pente: {currentAmmo}/{maxAmmo} | Bolso: {reserve}");
 
-        // --- TOCA O SOM DO TIRO AQUI ---
-        if (shootSound != null && audioSource != null)
+        // --- MUDANÇA: Toca o som de tiro USANDO O PLAYER ---
+        if (shootSound != null)
         {
-            // O PlayOneShot permite que os sons se sobreponham, ideal para armas automáticas ou shotgun!
-            audioSource.PlayOneShot(shootSound);
+            AudioSource pAudio = GetPlayerAudio();
+            if (pAudio != null) pAudio.PlayOneShot(shootSound);
         }
 
         switch (weaponType)
         {
             case WeaponType.Pistol:
             case WeaponType.AssaultRifle:
-                SpawnProjectile(Quaternion.identity);
+                float randomSpread = Random.Range(-bulletSpread, bulletSpread);
+                SpawnProjectile(Quaternion.Euler(0, 0, randomSpread));
                 break;
+
             case WeaponType.Shotgun:
                 FireShotgun();
                 break;
@@ -141,7 +163,6 @@ public class WeaponController : MonoBehaviour
             pRb.AddForce(-firePoint.right * kickbackForce, ForceMode2D.Impulse);
         }
 
-        // --- RECUO ---
         if (transform.parent != null)
         {
             PlayerController player = transform.parent.GetComponent<PlayerController>();
@@ -154,25 +175,45 @@ public class WeaponController : MonoBehaviour
         }
     }
 
-    // --- RECARGA ---
     void HandleReload()
     {
-        if (Input.GetKeyDown(KeyCode.R)) Reload();
+        if (Input.GetKeyDown(KeyCode.R) && !isReloading)
+        {
+            StartCoroutine(ReloadRoutine());
+        }
     }
 
-    void Reload()
+    IEnumerator ReloadRoutine()
     {
-        if (transform.parent == null) return;
+        if (transform.parent == null) yield break;
         if (playerAmmoInv == null) playerAmmoInv = transform.parent.GetComponent<PlayerAmmoInventory>();
-        if (playerAmmoInv == null || currentAmmo == maxAmmo) return;
+
+        if (playerAmmoInv == null || currentAmmo == maxAmmo) yield break;
 
         int needed = maxAmmo - currentAmmo;
-        int received = playerAmmoInv.TakeAmmo(weaponType, needed);
+        if (playerAmmoInv.GetAmmoCount(weaponType) <= 0)
+        {
+            Debug.Log("Sem munição reserva no inventário!");
+            yield break;
+        }
 
+        isReloading = true;
+
+        // --- MUDANÇA: Toca o som de recarga USANDO O PLAYER ---
+        if (reloadSound != null)
+        {
+            AudioSource pAudio = GetPlayerAudio();
+            if (pAudio != null) pAudio.PlayOneShot(reloadSound);
+        }
+
+        yield return new WaitForSeconds(reloadDuration);
+
+        int received = playerAmmoInv.TakeAmmo(weaponType, needed);
         if (received > 0) currentAmmo += received;
+
+        isReloading = false;
     }
 
-    // --- AÇÕES PÚBLICAS (CHAMADAS PELO PLAYER) ---
     public void PerformThrow(Vector2 direction)
     {
         Disconnect();
@@ -189,6 +230,9 @@ public class WeaponController : MonoBehaviour
 
     void Disconnect()
     {
+        StopAllCoroutines();
+        isReloading = false;
+
         transform.parent = null;
         isEquipped = false;
         rb.bodyType = RigidbodyType2D.Dynamic;
@@ -196,7 +240,11 @@ public class WeaponController : MonoBehaviour
         col.isTrigger = false;
     }
 
-    // --- COLISÃO / COLETA ---
+    void OnDisable()
+    {
+        isReloading = false;
+    }
+
     void OnCollisionEnter2D(Collision2D collision)
     {
         if (rb.linearVelocity.magnitude > 2f && collision.gameObject.CompareTag("Enemy"))

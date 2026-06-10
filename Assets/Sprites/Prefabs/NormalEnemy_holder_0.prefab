@@ -116,6 +116,8 @@ MonoBehaviour:
   armorAbsorption: 0.7
   hitSound: {fileID: 8300000, guid: cddb0d10a6c582d4181c73dc50caf8aa, type: 3}
   deathSound: {fileID: 8300000, guid: 1f1a1264929698f4f9282bb1c4e589a7, type: 3}
+  corpsePrefab: {fileID: 3753965130860536194, guid: f24c421c5e1725f48a6e965412492015, type: 3}
+  corpseLifetime: 5
   spriteRenderer: {fileID: 0}
 --- !u!50 &-1714343015893708829
 Rigidbody2D:

@@ -70,6 +70,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &23488267612028702
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -88,6 +89,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -109,9 +112,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_Sprite: {fileID: -3294788082675926453, guid: 7595794fb5b5797498b555373b4abdc0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -121,7 +126,6 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!61 &-6575165503631031324
 BoxCollider2D:
@@ -221,13 +225,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee4df24ee83a49b4bb8e017cce316bbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  iconUI: {fileID: 0}
   weaponType: 1
   projectilePrefab: {fileID: 5853217788186038540, guid: 2eac42050b48df140a2bc12fde939c63, type: 3}
   firePoint: {fileID: 4223038476838854530}
   fireRate: 2
   damage: 10
+  shootSound: {fileID: 8300000, guid: 882045ca868c86242866c9e16d1d963a, type: 3}
+  reloadSound: {fileID: 8300000, guid: 5c690a3ba52b2f542a9d466b0a091994, type: 3}
   maxAmmo: 30
   currentAmmo: 0
+  reloadDuration: 2
   pellets: 3
   spreadAngle: 15
   kickbackForce: 5

@@ -1,5 +1,5 @@
 using UnityEngine;
-using System.Collections; // Necessário para IEnumerator
+using System.Collections;
 
 public class EnemyHealth : MonoBehaviour
 {
@@ -14,17 +14,22 @@ public class EnemyHealth : MonoBehaviour
     [Range(0f, 1f)]
     public float armorAbsorption = 0.7f;
 
-    [Header("Áudio do Inimigo")] // --- NOVO CABEÇALHO PARA SONS ---
-    [Tooltip("Som tocado quando o inimigo sobrevive ao impacto")]
+    [Header("Áudio do Inimigo")]
     public AudioClip hitSound;
-    [Tooltip("Som tocado quando a vida chega a zero")]
-    public AudioClip deathSound;
     private AudioSource audioSource;
 
-    [Header("Feedback Visual (Opcional)")]
+    [Header("Áudio de morte")]
+    public AudioClip deathSound;
+
+    [Header("Efeito de Morte (Cadáver)")] // --- NOVA SEÇÃO ---
+    [Tooltip("Arraste o Prefab do cadáver/explosão aqui")]
+    public GameObject corpsePrefab;
+    [Tooltip("Tempo em segundos que o corpo fica no chão antes de sumir")]
+    public float corpseLifetime = 5f;
+
+    [Header("Feedback Visual")]
     public SpriteRenderer spriteRenderer;
 
-    // Variáveis para controlar o Flash sem bugar
     private Color defaultColor;
     private Coroutine currentFlashRoutine;
 
@@ -33,7 +38,6 @@ public class EnemyHealth : MonoBehaviour
         currentHealth = maxHealth;
         currentArmor = maxArmor;
 
-        // --- CONFIGURAÇÃO AUTOMÁTICA DE ÁUDIO ---
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null)
         {
@@ -54,7 +58,6 @@ public class EnemyHealth : MonoBehaviour
     {
         int damageToHealth = rawDamage;
 
-        // --- LÓGICA DE ARMADURA ---
         if (currentArmor > 0)
         {
             int damageAbsorbed = Mathf.RoundToInt(rawDamage * armorAbsorption);
@@ -67,36 +70,23 @@ public class EnemyHealth : MonoBehaviour
                 currentArmor = 0;
                 Debug.Log($"<color=orange>{gameObject.name}: ARMADURA QUEBRADA!</color>");
             }
-            else
-            {
-                Debug.Log($"<color=cyan>Armadura tankou: {damageAbsorbed}. Passou pra vida: {damageLeak}</color>");
-            }
 
             damageToHealth = damageLeak;
         }
 
-        // --- APLICA DANO NA VIDA ---
         currentHealth -= damageToHealth;
 
-        if (currentArmor > 0)
-            Debug.Log($"HP: {currentHealth} | Armor: {currentArmor}");
-        else
-            Debug.Log($"HP: {currentHealth} (Vulnerável)");
-
-        // MORTE
         if (currentHealth <= 0)
         {
             Die();
         }
         else
         {
-            // --- TOCA O SOM DE IMPACTO ---
             if (hitSound != null && audioSource != null)
             {
                 audioSource.PlayOneShot(hitSound);
             }
 
-            // Chama o método TriggerFlash em vez de StartCoroutine direto
             Color flashColor = (currentArmor > 0) ? Color.blue : Color.red;
             TriggerFlash(flashColor);
         }
@@ -104,14 +94,34 @@ public class EnemyHealth : MonoBehaviour
 
     void Die()
     {
-        // --- TOCA O SOM DE MORTE INDEPENDENTE ---
-        // Cria um ponto de áudio temporário na coordenada do mapa para o som
-        // não ser cortado quando o GameObject deixar de existir.
-        if (deathSound != null)
+        if (corpsePrefab != null)
         {
-            AudioSource.PlayClipAtPoint(deathSound, transform.position);
+            // 1. Cria o sprite do cadáver na mesma posição e rotação do inimigo
+            GameObject corpse = Instantiate(corpsePrefab, transform.position, transform.rotation);
+
+            // --- 2. O SOM DE MORTE NO CADÁVER ---
+            if (deathSound != null)
+            {
+                // Tenta pegar o AudioSource do cadáver. Se ele não tiver, cria um na hora!
+                AudioSource corpseAudio = corpse.GetComponent<AudioSource>();
+                if (corpseAudio == null)
+                {
+                    corpseAudio = corpse.AddComponent<AudioSource>();
+                }
+
+                // Toca o som a partir do corpo caído
+                corpseAudio.PlayOneShot(deathSound);
+            }
+
+            // 3. Destrói o cadáver após X segundos
+            Destroy(corpse, corpseLifetime);
+        }
+        else
+        {
+            Debug.LogWarning("Você esqueceu de colocar o Prefab do Cadáver no Inspector!");
         }
 
+        // Dropa o loot
         LootBag lootBag = GetComponent<LootBag>();
         if (lootBag != null)
         {
@@ -120,10 +130,10 @@ public class EnemyHealth : MonoBehaviour
 
         Debug.Log($"{gameObject.name} morreu.");
 
+        // Destrói o inimigo original
         Destroy(gameObject);
     }
 
-    // --- SISTEMA DE FLASH CORRIGIDO ---
     void TriggerFlash(Color targetColor)
     {
         if (spriteRenderer == null) return;
