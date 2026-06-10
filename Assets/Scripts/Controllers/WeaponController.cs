@@ -1,5 +1,5 @@
 using UnityEngine;
-using Unity.Cinemachine; // Se der erro, use 'Cinemachine' (Unity antigo)
+using Unity.Cinemachine;
 
 public enum WeaponType { Pistol = 0, AssaultRifle = 1, Shotgun = 2 }
 
@@ -7,6 +7,9 @@ public enum WeaponType { Pistol = 0, AssaultRifle = 1, Shotgun = 2 }
 [RequireComponent(typeof(Collider2D))]
 public class WeaponController : MonoBehaviour
 {
+    [Header("Interface")]
+    public Sprite iconUI;
+
     [Header("Configuração Geral")]
     public WeaponType weaponType;
     public GameObject projectilePrefab;
@@ -16,10 +19,12 @@ public class WeaponController : MonoBehaviour
     public float fireRate = 0.5f;
     public int damage = 10;
 
+    [Header("Áudio")] // --- NOVO CABEÇALHO PARA O SOM ---
+    public AudioClip shootSound;
+
     [Header("Munição")]
     public int maxAmmo = 30;
     public int currentAmmo;
-    // Reserva removida daqui, pois fica no PlayerAmmoInventory
     private PlayerAmmoInventory playerAmmoInv;
 
     [Header("Shotgun")]
@@ -28,7 +33,7 @@ public class WeaponController : MonoBehaviour
     public float kickbackForce = 5f;
 
     [Header("Arremesso (Throw)")]
-    public float throwForce = 15f; // A ARMA define a força agora
+    public float throwForce = 15f;
     public float throwSpin = 720f;
     public int throwDamage = 5;
 
@@ -38,6 +43,7 @@ public class WeaponController : MonoBehaviour
     private Rigidbody2D rb;
     private Collider2D col;
     private CinemachineImpulseSource impulseSource;
+    private AudioSource audioSource; // --- NOVO COMPONENTE DE ÁUDIO ---
 
     private bool IsAutomatic => weaponType == WeaponType.AssaultRifle;
 
@@ -47,6 +53,15 @@ public class WeaponController : MonoBehaviour
         col = GetComponent<Collider2D>();
         impulseSource = GetComponent<CinemachineImpulseSource>();
         currentAmmo = maxAmmo;
+
+        // --- CONFIGURAÇÃO DO ÁUDIO ---
+        // Pega o AudioSource se já existir, ou cria um automaticamente na arma
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+        audioSource.playOnAwake = false; // Garante que a arma não atire sozinha ao nascer
     }
 
     void Update()
@@ -84,6 +99,13 @@ public class WeaponController : MonoBehaviour
         int reserve = (playerAmmoInv != null) ? playerAmmoInv.GetAmmoCount(weaponType) : 0;
         Debug.Log($"[ARMA] {weaponType} | Pente: {currentAmmo}/{maxAmmo} | Bolso: {reserve}");
 
+        // --- TOCA O SOM DO TIRO AQUI ---
+        if (shootSound != null && audioSource != null)
+        {
+            // O PlayOneShot permite que os sons se sobreponham, ideal para armas automáticas ou shotgun!
+            audioSource.PlayOneShot(shootSound);
+        }
+
         switch (weaponType)
         {
             case WeaponType.Pistol:
@@ -118,23 +140,18 @@ public class WeaponController : MonoBehaviour
         {
             pRb.AddForce(-firePoint.right * kickbackForce, ForceMode2D.Impulse);
         }
-        
-            // --- NOVO RECUO ---
-            if (transform.parent != null)
+
+        // --- RECUO ---
+        if (transform.parent != null)
+        {
+            PlayerController player = transform.parent.GetComponent<PlayerController>();
+
+            if (player != null)
             {
-                // Tenta pegar o script do Player
-                PlayerController player = transform.parent.GetComponent<PlayerController>();
-
-                if (player != null)
-                {
-                    // A direção do recuo é OPOSTA ao tiro (-firePoint.right)
-                    Vector2 recoilDir = -firePoint.right;
-
-                    // Chama o método novo no player
-                    player.ApplyKnockback(recoilDir, kickbackForce);
-                }
+                Vector2 recoilDir = -firePoint.right;
+                player.ApplyKnockback(recoilDir, kickbackForce);
             }
-        
+        }
     }
 
     // --- RECARGA ---
@@ -156,8 +173,6 @@ public class WeaponController : MonoBehaviour
     }
 
     // --- AÇÕES PÚBLICAS (CHAMADAS PELO PLAYER) ---
-
-    // Correção: Agora aceita APENAS a direção. A força é interna (this.throwForce)
     public void PerformThrow(Vector2 direction)
     {
         Disconnect();
@@ -191,17 +206,15 @@ public class WeaponController : MonoBehaviour
                 enemy.TakeDamage(throwDamage);
             }
         }
-        rb.linearVelocity *= 0.3f; // Freio
+        rb.linearVelocity *= 0.3f;
     }
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        // Só coleta se não estiver equipada e for o player
         if (!isEquipped && other.CompareTag("Player"))
         {
             if (other.TryGetComponent(out WeaponInventory inventory))
             {
-                // Reseta física antes de entregar
                 rb.bodyType = RigidbodyType2D.Kinematic;
                 rb.linearVelocity = Vector2.zero;
                 rb.angularVelocity = 0;
@@ -210,7 +223,6 @@ public class WeaponController : MonoBehaviour
                 inventory.CollectWeapon(this);
                 isEquipped = true;
 
-                // Busca referência do inventário de munição ao equipar
                 playerAmmoInv = other.GetComponent<PlayerAmmoInventory>();
             }
         }

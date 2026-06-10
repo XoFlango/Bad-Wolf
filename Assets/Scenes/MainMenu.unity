@@ -234,7 +234,7 @@ GameObject:
   m_Component:
   - component: {fileID: 212815257}
   - component: {fileID: 212815258}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: MenuBG
   m_TagString: UI
   m_Icon: {fileID: 0}
@@ -250,14 +250,14 @@ RectTransform:
   m_GameObject: {fileID: 212815256}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.77, y: 0.98, z: 0.96999127}
+  m_LocalScale: {x: 1.8635521, y: 1.0317973, z: 1.0212594}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 626472409}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -373.32336, y: -210}
+  m_AnchoredPosition: {x: -529.31, y: -297.81}
   m_SizeDelta: {x: 1, y: 1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!212 &212815258

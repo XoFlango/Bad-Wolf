@@ -114,6 +114,8 @@ MonoBehaviour:
   maxArmor: 0
   currentArmor: 0
   armorAbsorption: 0.7
+  hitSound: {fileID: 8300000, guid: cddb0d10a6c582d4181c73dc50caf8aa, type: 3}
+  deathSound: {fileID: 8300000, guid: 1f1a1264929698f4f9282bb1c4e589a7, type: 3}
   spriteRenderer: {fileID: 0}
 --- !u!50 &-1714343015893708829
 Rigidbody2D:
@@ -195,13 +197,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f30c308c220dfe146a7a62830dc388b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAI
-  speed: 3
+  baseSpeed: 3
+  speedVariance: 0.5
   stoppingDistance: 0.8
+  visionRadius: 10
+  isAlert: 0
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 1024
-  colisorRaio: 0.5
-  bumpDistancia: 0.15
+  colisorRaio: 0.23
   isAIActive: 1
 --- !u!70 &586451849487074754
 CapsuleCollider2D:

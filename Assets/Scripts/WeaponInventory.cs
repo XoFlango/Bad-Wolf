@@ -4,7 +4,7 @@ public class WeaponInventory : MonoBehaviour
 {
     // [HideInInspector] evita que o Unity tente desenhar o array e cause o erro
     // Se você precisar ver o debug, remova essa linha, mas saiba que o erro é visual.
-    [HideInInspector]
+    //[HideInInspector]
     public WeaponController[] weaponSlots = new WeaponController[3];
 
     void Start()

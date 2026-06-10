@@ -7,9 +7,14 @@ public class ChestController : MonoBehaviour
     public Sprite openSprite;
     private SpriteRenderer sr;
 
+    [Header("Áudio")] // --- NOVO CABEÇALHO PARA O SOM ---
+    [Tooltip("Som tocado quando o baú é aberto")]
+    public AudioClip openSound;
+    private AudioSource audioSource;
+
     [Header("Configurações de Loot")]
     public GameObject coinPrefab;
-    // O aviso "Pressione E para abrir" (pode ser o mesmo texto que usamos no Boss)
+    // O aviso "Pressione E para abrir"
     public GameObject promptUI;
 
     private bool isPlayerNear = false;
@@ -19,6 +24,14 @@ public class ChestController : MonoBehaviour
     {
         sr = GetComponent<SpriteRenderer>();
         sr.sprite = closedSprite; // Garante que começa fechado
+
+        // --- CONFIGURAÇÃO AUTOMÁTICA DE ÁUDIO ---
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+        audioSource.playOnAwake = false;
 
         if (promptUI != null) promptUI.SetActive(false);
     }
@@ -38,6 +51,12 @@ public class ChestController : MonoBehaviour
         sr.sprite = openSprite; // Troca a imagem
 
         if (promptUI != null) promptUI.SetActive(false); // Esconde o aviso
+
+        // --- TOCA O SOM DE ABRIR AQUI ---
+        if (openSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(openSound);
+        }
 
         // Sorteia de 1 a 3 moedas
         int coinAmount = Random.Range(1, 4);
