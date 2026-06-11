@@ -10,7 +10,7 @@ public class Health : MonoBehaviour
     [Header("Status")]
     public int maxHealth = 100;
     private int currentHealth;
-
+    private bool isDead = false;
     [Header("Invencibilidade (iFrames)")]
     public float invulnerabilityDuration = 1.0f; // 1 segundo como pediu
     private bool isInvulnerable = false;         // Trava interna
@@ -25,6 +25,31 @@ public class Health : MonoBehaviour
         currentHealth = maxHealth;
         if (healthBar != null) healthBar.UpdateHealthUI(currentHealth, maxHealth);
         if (spriteRenderer == null) spriteRenderer = GetComponentInChildren<SpriteRenderer>(); // Tenta achar no visual
+    }
+
+    public bool Heal(int amount)
+    {
+        if (currentHealth >= maxHealth || isDead)
+        {
+            Debug.Log("Vida já está cheia ou Player está morto!");
+            return false;
+        }
+
+        currentHealth += amount;
+
+        if (currentHealth > maxHealth)
+        {
+            currentHealth = maxHealth;
+        }
+
+        // 3. Atualiza a interface no exato momento da cura
+        if (healthBar != null)
+        {
+            healthBar.UpdateHealthUI(currentHealth, maxHealth);
+        }
+
+        Debug.Log($"HP Recuperado! Vida atual: {currentHealth}/{maxHealth}");
+        return true;
     }
 
     public void TakeDamage(int damage)
@@ -98,6 +123,7 @@ public class Health : MonoBehaviour
 
     void Die()
     {
+        isDead = true;
         // 1. Cria o efeito de morte (Caixão ou Explosão)
         if (deathPrefab != null)
         {

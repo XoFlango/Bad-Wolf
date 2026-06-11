@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &8208398601461278428
+--- !u!1 &3992317920114441890
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,41 +8,41 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 6036442617050819695}
-  - component: {fileID: 5270614760877489293}
-  - component: {fileID: 5782894684643180691}
-  - component: {fileID: -7529104957155751353}
-  - component: {fileID: -8222701141791680816}
-  m_Layer: 11
-  m_Name: chestClosed_0
-  m_TagString: Prop
+  - component: {fileID: 6961346111395162631}
+  - component: {fileID: 6616385469896382385}
+  - component: {fileID: 4736116526660341155}
+  - component: {fileID: -5509663009863862669}
+  - component: {fileID: 6521953671989984645}
+  m_Layer: 9
+  m_Name: Heal_Item1_0
+  m_TagString: Item
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &6036442617050819695
+--- !u!4 &6961346111395162631
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8208398601461278428}
+  m_GameObject: {fileID: 3992317920114441890}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.496, y: -1.463, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &5270614760877489293
+--- !u!212 &6616385469896382385
 SpriteRenderer:
   serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8208398601461278428}
+  m_GameObject: {fileID: 3992317920114441890}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -80,69 +80,27 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 1595837357
-  m_SortingLayer: -4
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 7906977341874053163, guid: 16489bdd62b21364ba9814c267be69f8, type: 3}
+  m_Sprite: {fileID: 1196182292263501360, guid: a0057306e63ebd74089d61035efc69c6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 0.9375}
+  m_Size: {x: 0.9375, y: 0.8125}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!114 &5782894684643180691
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8208398601461278428}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3c29353538664dd4f946c3dbfb83ec55, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ChestController
-  closedSprite: {fileID: 7906977341874053163, guid: 16489bdd62b21364ba9814c267be69f8, type: 3}
-  openSprite: {fileID: 417825429968606110, guid: 22c2d3aa616039244a1afed40794c030, type: 3}
-  openSound: {fileID: 8300000, guid: 1d8dac1134cff88429b3d06eb7bfadad, type: 3}
-  possibleLoot:
-  - itemName: Coin
-    itemPrefab: {fileID: 7833293788176007497, guid: 03f7815a3728d304d8402010ffbd07e8, type: 3}
-    dropChance: 46
-    minAmount: 1
-    maxAmount: 10
-  - itemName: Pistol Ammo
-    itemPrefab: {fileID: 330221036288348831, guid: 3a75049d71c67bd44a3cef7e2ab64c93, type: 3}
-    dropChance: 60
-    minAmount: 1
-    maxAmount: 3
-  - itemName: AR Ammo
-    itemPrefab: {fileID: 8037193394839690023, guid: 17e6d9df619793a499e1b90d78be9356, type: 3}
-    dropChance: 26
-    minAmount: 1
-    maxAmount: 2
-  - itemName: Shotgun Ammo
-    itemPrefab: {fileID: 6428465698992642618, guid: 1674bb6eee4d74e4e9f0d92b25ab5ddf, type: 3}
-    dropChance: 18
-    minAmount: 1
-    maxAmount: 2
-  - itemName: Heath
-    itemPrefab: {fileID: 3992317920114441890, guid: 5c3221936f1b4fa459b41a3e360677e9, type: 3}
-    dropChance: 18
-    minAmount: 1
-    maxAmount: 4
-  promptUI: {fileID: 0}
---- !u!61 &-7529104957155751353
+--- !u!61 &4736116526660341155
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8208398601461278428}
+  m_GameObject: {fileID: 3992317920114441890}
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
@@ -174,28 +132,28 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 0.9375}
-    newSize: {x: 1, y: 0.9375}
+    oldSize: {x: 0.9375, y: 0.8125}
+    newSize: {x: 0.9375, y: 0.8125}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1, y: 0.9375}
+  m_Size: {x: 0.9375, y: 0.8125}
   m_EdgeRadius: 0
---- !u!50 &-8222701141791680816
+--- !u!50 &-5509663009863862669
 Rigidbody2D:
   serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8208398601461278428}
+  m_GameObject: {fileID: 3992317920114441890}
   m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDamping: 0
+  m_LinearDamping: 6.5
   m_AngularDamping: 0.05
   m_GravityScale: 0
   m_Material: {fileID: 0}
@@ -209,3 +167,17 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &6521953671989984645
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3992317920114441890}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01ed7f053373891488136c3bbcadf240, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HealthItem
+  healAmount: 25
+  healSound: {fileID: 0}
