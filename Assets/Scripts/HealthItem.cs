@@ -9,6 +9,7 @@ public class HealthItem : MonoBehaviour
     [Header("Áudio")]
     public AudioClip healSound;
 
+
     void OnTriggerEnter2D(Collider2D other)
     {
         // 1. Testa se o item sentiu a colisão com qualquer coisa
